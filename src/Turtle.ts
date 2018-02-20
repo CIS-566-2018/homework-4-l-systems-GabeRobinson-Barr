@@ -13,7 +13,7 @@ class Turtle {
     location: vec3 = vec3.create();
     direction: vec3 = vec3.create();
     scale: vec3 = vec3.create();
-    scaleMod : number = 0;
+    scaleMod : number = 5;
     depth: number = 0;
     ttype: TurtleType;
 
@@ -55,7 +55,7 @@ class Turtle {
 
     move() { // Add a section to the tree
         this.depth += 1;
-        this.scale[2] *= 0.95; // As we add more sections each section should get smaller height wise
+        this.scale[2] *= 0.9; // As we add more sections each section should get smaller height wise
 
         vec3.add(this.location, this.location, vec3.scale(vec3.create(), this.direction, this.scale[2]));
     }
@@ -73,11 +73,15 @@ class Turtle {
     }
 
     scaleUp() {
-        this.scaleMod++;
+        if (this.scaleMod < 10) {
+            this.scaleMod++;
+        }
     }
 
     scaleDown() {
-        this.scaleMod--;
+        if (this.scaleMod > 1) {
+            this.scaleMod--;
+        }
     }
 
 
@@ -94,8 +98,14 @@ class Turtle {
                                     -bit[0], -bit[1], -bit[2], 0.0,
                                     this.direction[0], this.direction[1], this.direction[2], 0.0,
                                     this.location[0], this.location[1], this.location[2], 1.0); // Translate/rotate matrix
-        
-        mat4.scale(trans, trans, this.scale); // Scale by our scale
+        let tempScale = vec3.clone(this.scale);
+        let sclOff = this.scaleMod / 5;
+        tempScale[0] *= sclOff;
+        tempScale[1] *= sclOff;
+        if (this.ttype == TurtleType.COCONUT) {
+            tempScale[2] *= sclOff;
+        }
+        mat4.scale(trans, trans, tempScale); // Scale by our scale
         //console.log(this.direction);
 
         return trans;

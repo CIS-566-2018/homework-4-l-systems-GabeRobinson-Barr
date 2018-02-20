@@ -48,7 +48,7 @@ const ExpRules : IExpRules = {
     C : function() : string[] { // Coconuts can grow bigger
         let r = Math.random();
         let s : string[] = [];
-        if (r <= 0.3) {
+        if (r <= 0.4) {
             s.push('S');
         }
         s.push('C');
@@ -57,7 +57,7 @@ const ExpRules : IExpRules = {
     P : function() : string[] { // Large leaf tips can make the leaf grow longer
         let r = Math.random();
         let s : string[] = [];
-        if (r <= 0.6) { //Leaf can get smaller if it grows
+        if (r <= 0.2) { //Leaf can get smaller if it grows
             s.push('s');
         }
         if (r <= 0.8) {
@@ -115,7 +115,7 @@ const ExpRules : IExpRules = {
     p : function() : string[] { // Small leaf tips can grow longer as well
         let r = Math.random();
         let s : string[] = [];
-        if (r <= 0.5) { // can get smaller if it grows
+        if (r <= 0.4) { // can get smaller if it grows
             s.push('s');
         }
         if (r <= 0.85) {
@@ -181,15 +181,9 @@ class Expander {
             exp = temp; // Replace exp with the expanded string
         }
         this.tree = exp; // Store the final expanded string in tree
-        //console.log(this.tree);
+        console.log(this.tree);
     }
 
-    expandRule(s: string): string[] { // Holds the rules for expanding a character
-        if (s == 'R') {
-            return ['A', '[', 'z', 'R', ']', '[', 'Z', 'R', ']'];
-        }
-        return [s]; // error
-    }
 
 
 };
