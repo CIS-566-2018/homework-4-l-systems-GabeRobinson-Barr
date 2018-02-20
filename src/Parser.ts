@@ -1,4 +1,4 @@
-import Turtle from './Turtle';
+import Turtle, {TurtleType} from './Turtle';
 import Tree from './geometry/Tree';
 import {vec3, vec4, mat4} from 'gl-matrix';
 
@@ -12,21 +12,93 @@ class Parser {
     constructor() {}
 
     parse(s: string[]) {
-        console.log(s);
-        let t = new Turtle(vec3.fromValues(0,0,0), vec3.fromValues(0,1,0), 1);
+        let leafCount = 0;
+        let leafIdx = 0;
+        let startDir = vec3.random(vec3.create());
+        startDir[1] = Math.abs(startDir[1]) * 0.6 + 0.4;
+        let t = new Turtle(vec3.fromValues(0,0,0), startDir, TurtleType.TRUNK);
         for (let i = 0; i < s.length; i++) {
             let c = s[i];
             if (c == '[') {
-                let temp = new Turtle(vec3.clone(t.location), vec3.clone(t.direction), 1);
-                this.turtles.push(temp);
+                this.turtles.push(t);
+                let nType: TurtleType;
+                let newDir = vec3.random(vec3.create());
+                let newPos = vec3.clone(t.location);
+                if (t.ttype == TurtleType.LARGE_LEAF) {
+                    nType = TurtleType.SMALL_LEAF;
+                    
+                    let tempDir = vec3.fromValues(t.direction[1], t.direction[2], -t.direction[0]);
+                    vec3.cross(newDir, tempDir, t.direction);
+                    vec3.add(newDir, newDir, vec3.scale(vec3.create(), t.direction, Math.random() * 0.2 + 0.2));
+                    newDir[1] = newDir[1] * 0.2 - 0.2;
+                    vec3.normalize(newDir, newDir);
+                    if ((leafIdx % 2) == 0) {
+                        newDir[0] *= -1;
+                        newDir[2] *= -1;
+                    }
+                    leafIdx++;
+                    vec3.add(newPos, newPos, vec3.scale(vec3.create(), t.direction, (leafIdx / leafCount) - 1));
+                    vec3.add(newPos, newPos, vec3.scale(vec3.create(), newDir, -0.2));
+                    if (leafIdx == leafCount) {
+                        leafIdx = 0;
+                        leafCount = 0;
+                    }
+
+                }
+                else {
+                    let next = s[i + 1];
+                    if (next == 'S' || next == 'C') {
+                        nType = TurtleType.COCONUT;
+                        vec3.add(newPos, newPos, vec3.scale(vec3.create(), newDir, 0.25));
+                    }
+                    else {
+                        nType = TurtleType.LARGE_LEAF;
+                        vec3.add(newPos, newPos, vec3.scale(vec3.create(), t.direction, 0.5));
+                        vec3.add(newPos, newPos, vec3.scale(vec3.create(), newDir, -0.25));
+                        newDir[0] = newDir[0] * 0.8 + 0.2
+                        newDir[2] = newDir[2] * 0.8 + 0.2;
+                        vec3.normalize(newDir, newDir);
+                    }
+                }
+
+                t = new Turtle(newPos, newDir, nType);
             }
             else if (c == ']') {
                 t = this.turtles.pop();
             }
+            else if (c == '1') {
+                leafCount++;
+            }
             else {
-                t.move(c);
-                if (c == 'A') {
+                switch (c) {
+                    case 'C' :
                     this.addBranch(t.getTransform());
+                    break;
+                    case 'T' :
+                    t.move();
+                    this.addBranch(t.getTransform());
+                    break;
+                    case 'L' :
+                    t.move();
+                    this.addBranch(t.getTransform());
+                    break;
+                    case 'l' :
+                    t.move();
+                    this.addBranch(t.getTransform());
+                    break;
+                    case 'U' :
+                    t.rotateUp();
+                    break;
+                    case 'D' :
+                    t.rotateDown();
+                    break;
+                    case 'S' :
+                    t.scaleUp();
+                    break;
+                    case 's' :
+                    t.scaleDown();
+                    break;
+
                 }
             }
         }
@@ -48,7 +120,7 @@ class Parser {
             }
         }
         //console.log(this.positions);
-        //console.log(this.normals);
+        //console.log(transform);
     }
 
 };

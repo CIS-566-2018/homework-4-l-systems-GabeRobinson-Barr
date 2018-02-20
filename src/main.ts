@@ -32,7 +32,7 @@ const controls = {
 let icosphere: Icosphere;
 let square: Square;
 let cube: Cube;
-
+//
 let expander: Expander = new Expander(['R']);
 let parser: Parser = new Parser();
 let tree: Tree;
@@ -44,7 +44,7 @@ function loadScene() {
   // square.create();
   // cube = new Cube(vec3.fromValues(2, 0, 0));
   // cube.create();
-  expander.expandSeed(4);
+  expander.expandSeed(15);
   parser.parse(expander.tree);
 
   tree = new Tree();
@@ -91,7 +91,7 @@ function main() {
   // Initial call to load scene
   loadScene();
 
-  const camera = new Camera(vec3.fromValues(0, 0, 5), vec3.fromValues(0, 0, 0));
+  const camera = new Camera(vec3.fromValues(0, 0, 20), vec3.fromValues(0, 10, 0));
 
   const renderer = new OpenGLRenderer(canvas);
   renderer.setClearColor(0.2, 0.2, 0.2, 1);
