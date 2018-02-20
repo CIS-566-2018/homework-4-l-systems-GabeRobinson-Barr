@@ -38,7 +38,7 @@ class Turtle {
             this.scale[0] = (Math.random() * 0.1) + 0.1;
         }
         else if (t == TurtleType.COCONUT) {
-            let r = Math.random() * 0.2 + 0.2;
+            let r = Math.random() * 0.3 + 0.25;
             this.scale = vec3.fromValues(r,r,r);
             this.move();
         }

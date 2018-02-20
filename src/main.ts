@@ -16,7 +16,10 @@ import Tree from './geometry/Tree';
 // This will be referred to by dat.GUI's functions that add GUI elements.
 const controls = {
   tesselations: 6,
-  'Load Scene': loadScene, // A function pointer, essentially
+  'Add Tree': loadScene, // A function pointer, essentially
+  'Reset Scene': resetScene,
+  iterations: 15,
+  'Weeping Willow Mode': false,
   color: [255, 0, 0],
   currentshader: 'lambert',
   chaoslevel: 0, // This makes the noisyplanet more chaotic by decreasing noise tilesize
@@ -44,12 +47,21 @@ function loadScene() {
   // square.create();
   // cube = new Cube(vec3.fromValues(2, 0, 0));
   // cube.create();
-  expander.expandSeed(15);
+  let willowmode = 0;
+  if (controls['Weeping Willow Mode']) {
+    willowmode = 20;
+  }
+  expander.expandSeed(controls.iterations + willowmode);
   parser.parse(expander.tree);
 
   tree = new Tree();
   tree.createTree(parser.positions, parser.normals);
 
+}
+
+function resetScene() {
+  parser = new Parser();
+  loadScene();
 }
 
 function main() {
@@ -65,18 +77,12 @@ function main() {
 
   // Add controls to the gui
   const gui = new DAT.GUI();
-  gui.add(controls, 'tesselations', 0, 8).step(1);
-  gui.add(controls, 'Load Scene');
-  gui.addColor(controls, 'color');
-  gui.add(controls, 'currentshader', ['lambert', 'custom', 'noisyplanet'] );
-  gui.add(controls, 'enableTime');
-  gui.add(controls, 'speed', 0, 10).step(1);
-  gui.add(controls, 'chaoslevel', 0, 9).step(1);
-  gui.add(controls, 'hillHeight', 0, 10).step(1);
-  gui.add(controls, 'bubbleHeight', 0, 10).step(1);
-  gui.add(controls, 'rippleHeight', 0, 10).step(1);
-  gui.add(controls, 'rippleFrequency', 0, 10).step(1);
-  gui.add(controls, 'swapcolors');
+  
+  gui.add(controls, 'Add Tree');
+  gui.add(controls, 'Reset Scene');
+  gui.add(controls, 'iterations', 1, 30).step(1);
+  //gui.add(controls, "Weeping Willow Mode");
+  
 
   // get canvas and webgl context
   const canvas = <HTMLCanvasElement> document.getElementById('canvas');

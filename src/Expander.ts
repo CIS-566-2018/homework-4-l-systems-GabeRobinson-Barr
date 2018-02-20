@@ -22,7 +22,7 @@ const ExpRules : IExpRules = {
         }
         s.push('R');
         r = Math.random();
-        if (r <= 0.2) { // Can spawn coconuts
+        if (r <= 0.4) { // Can spawn coconuts
             s.push('[');
             s.push('C');
             s.push(']');
@@ -181,7 +181,7 @@ class Expander {
             exp = temp; // Replace exp with the expanded string
         }
         this.tree = exp; // Store the final expanded string in tree
-        console.log(this.tree);
+        //console.log(this.tree);
     }
 
     expandRule(s: string): string[] { // Holds the rules for expanding a character
