@@ -20,16 +20,6 @@ const controls = {
   'Reset Scene': resetScene,
   iterations: 15,
   'Weeping Willow Mode': false,
-  color: [255, 0, 0],
-  currentshader: 'lambert',
-  chaoslevel: 0, // This makes the noisyplanet more chaotic by decreasing noise tilesize
-  enableTime: true,
-  speed: 5,
-  hillHeight: 1,
-  bubbleHeight: 1,
-  rippleHeight: 1,
-  rippleFrequency: 1,
-  swapcolors: true,
 };
 
 let icosphere: Icosphere;
@@ -55,7 +45,7 @@ function loadScene() {
   parser.parse(expander.tree);
 
   tree = new Tree();
-  tree.createTree(parser.positions, parser.normals);
+  tree.createTree(parser.positions, parser.normals, parser.colors);
 
 }
 
@@ -65,7 +55,6 @@ function resetScene() {
 }
 
 function main() {
-  const startTime = new Date().getTime();
 
   // Initial display for framerate
   const stats = Stats();
@@ -107,18 +96,6 @@ function main() {
     new Shader(gl.VERTEX_SHADER, require('./shaders/lambert-vert.glsl')),
     new Shader(gl.FRAGMENT_SHADER, require('./shaders/lambert-frag.glsl')),
   ]);
-
-  const custom = new ShaderProgram([
-    new Shader(gl.VERTEX_SHADER, require('./shaders/custom-vert.glsl')),
-    new Shader(gl.FRAGMENT_SHADER, require('./shaders/custom-frag.glsl')),
-  ]);
-
-  const noisyplanet = new ShaderProgram([
-    new Shader(gl.VERTEX_SHADER, require('./shaders/noisyplanet-vert.glsl')),
-    new Shader(gl.FRAGMENT_SHADER, require('./shaders/noisyplanet-frag.glsl')),
-  ]);
-
-
  
 
   // This function will be called every frame
@@ -128,30 +105,14 @@ function main() {
     gl.viewport(0, 0, window.innerWidth, window.innerHeight);
     renderer.clear();
     
-    let prog: ShaderProgram;
-    if(controls.currentshader == 'custom') {
-      prog = custom;
-    }
-    else if(controls.currentshader == 'noisyplanet'){
-      prog = noisyplanet;
-    }
-    else {
-      prog = lambert;
-    }
-
-    let currTime = 0;
-    if (controls.enableTime) {
-      currTime = (new Date().getTime() - startTime) * controls.speed / 5;
-    }
+    let prog: ShaderProgram = lambert;
 
     renderer.render(camera, prog, [
       //icosphere,
       //square,
       //cube,
       tree,
-    ], controls.color, currTime, (10 - controls.chaoslevel) / 10,
-    vec4.fromValues(controls.hillHeight, controls.bubbleHeight, controls.rippleHeight, controls.rippleFrequency),
-    controls.swapcolors);
+    ]);
     stats.end();
 
     // Tell the browser to call `tick` again whenever it renders a new frame

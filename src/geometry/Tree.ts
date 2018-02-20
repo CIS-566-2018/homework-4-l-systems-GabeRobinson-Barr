@@ -6,6 +6,7 @@ class Tree extends Drawable {
     indices: Uint32Array;
     positions: Float32Array;
     normals: Float32Array;
+    colors: Float32Array;
     //center: vec4;
 
     constructor() {
@@ -91,6 +92,38 @@ class Tree extends Drawable {
         return branchNor;
     }
 
+    static createBranchCol(): number[] {
+        let branchCol: number[] = [];
+        for (let i = 0; i < 24; i++) {
+            branchCol.push(0.4);
+            branchCol.push(0.2);
+            branchCol.push(0);
+            branchCol.push(1);
+        }
+        return branchCol;
+    }
+
+    static createLeafCol(): number[] {
+        let leafCol: number[] = [];
+        for (let i = 0; i < 24; i++) {
+            leafCol.push(0.22);
+            leafCol.push(0.39);
+            leafCol.push(0.03);
+            leafCol.push(1);
+        }
+        return leafCol;
+    }
+    static createCocoCol(): number[] {
+        let leafCol: number[] = [];
+        for (let i = 0; i < 24; i++) {
+            leafCol.push(0.37);
+            leafCol.push(0.22);
+            leafCol.push(0.12);
+            leafCol.push(1);
+        }
+        return leafCol;
+    }
+
     createIdx() {
         let vertNum = this.positions.length / 4;
         let branchIdx: number[] = [];
@@ -110,9 +143,10 @@ class Tree extends Drawable {
         this.indices = new Uint32Array(branchIdx);
     }
 
-    createTree(pos: number[], nor: number[]) {
+    createTree(pos: number[], nor: number[], col: number[]) {
         this.positions = new Float32Array(pos);
         this.normals = new Float32Array(nor);
+        this.colors = new Float32Array(col);
         this.createIdx();
 
         this.create();
@@ -123,6 +157,7 @@ class Tree extends Drawable {
         this.generateIdx();
         this.generatePos();
         this.generateNor();
+        this.generateCol();
 
         this.count = this.indices.length;
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufIdx);
@@ -133,6 +168,9 @@ class Tree extends Drawable {
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufPos);
         gl.bufferData(gl.ARRAY_BUFFER, this.positions, gl.STATIC_DRAW);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.bufCol);
+        gl.bufferData(gl.ARRAY_BUFFER, this.colors, gl.STATIC_DRAW);
 
         console.log(`Created Tree`);
     }

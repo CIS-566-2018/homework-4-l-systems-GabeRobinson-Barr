@@ -6,8 +6,10 @@ class Parser {
     turtles: Turtle[] = []; // Stack of Turtles
     branchPos: number[] = Tree.createBranchPos(); // these two hold the default positions/normals for a single branch
     branchNor: number[] = Tree.createBranchNor();
+    currentCol: number[] = Tree.createBranchCol();
     positions: number[] = []; // Holds all the position data for the final vbo
     normals: number[] = []; // Holds all the normals for the final vbo
+    colors: number[] = [];
 
     constructor() {}
 
@@ -72,18 +74,22 @@ class Parser {
             else {
                 switch (c) {
                     case 'C' :
+                    this.currentCol = Tree.createCocoCol();
                     this.addBranch(t.getTransform());
                     break;
                     case 'T' :
                     t.move();
+                    this.currentCol = Tree.createBranchCol();
                     this.addBranch(t.getTransform());
                     break;
                     case 'L' :
                     t.move();
+                    this.currentCol = Tree.createLeafCol();
                     this.addBranch(t.getTransform());
                     break;
                     case 'l' :
                     t.move();
+                    this.currentCol = Tree.createLeafCol();
                     this.addBranch(t.getTransform());
                     break;
                     case 'U' :
@@ -114,9 +120,11 @@ class Parser {
             vec4.transformMat4(pos, pos, transform);
             let nor = vec4.fromValues(this.branchNor[i], this.branchNor[i + 1], this.branchNor[i + 2], this.branchNor[i + 3]);
             vec4.transformMat4(nor, nor, invTransp);
+            let col = vec4.fromValues(this.currentCol[i], this.currentCol[i + 1], this.currentCol[i + 2], this.currentCol[i + 3]);
             for(let j = 0; j < 4; j++) {
                 this.positions.push(pos[j]);
                 this.normals.push(nor[j]);
+                this.colors.push(col[j]);
             }
         }
         //console.log(this.positions);
