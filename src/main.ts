@@ -11,6 +11,7 @@ import ShaderProgram, {Shader} from './rendering/gl/ShaderProgram';
 import Expander from './Expander';
 import Parser from './Parser';
 import Tree from './geometry/Tree';
+import OBJFile from './geometry/OBJFile';
 
 // Define an object with application parameters and button callbacks
 // This will be referred to by dat.GUI's functions that add GUI elements.
@@ -20,6 +21,8 @@ const controls = {
   'Reset Scene': resetScene,
   iterations: 15,
   'Weeping Willow Mode': false,
+  OBJName: '',
+  'Load OBJ': loadObj,
 };
 
 let icosphere: Icosphere;
@@ -29,6 +32,9 @@ let cube: Cube;
 let expander: Expander = new Expander(['R']);
 let parser: Parser = new Parser();
 let tree: Tree;
+
+let fileMesh: OBJFile;
+let OBJCreated = false;
 
 function loadScene() {
   // icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, controls.tesselations);
@@ -47,6 +53,13 @@ function loadScene() {
   tree = new Tree();
   tree.createTree(parser.positions, parser.normals, parser.colors);
 
+}
+
+function loadObj() { // Note This only works if an obj file is available
+  tree = new Tree();
+  fileMesh = new OBJFile(controls.OBJName);
+  fileMesh.create();
+  OBJCreated = true;
 }
 
 function resetScene() {
@@ -70,6 +83,8 @@ function main() {
   gui.add(controls, 'Add Tree');
   gui.add(controls, 'Reset Scene');
   gui.add(controls, 'iterations', 1, 30).step(1);
+  gui.add(controls, 'OBJName');
+  gui.add(controls, 'Load OBJ');
   //gui.add(controls, "Weeping Willow Mode");
   
 
@@ -107,12 +122,19 @@ function main() {
     
     let prog: ShaderProgram = lambert;
 
-    renderer.render(camera, prog, [
-      //icosphere,
-      //square,
-      //cube,
-      tree,
-    ]);
+    if (OBJCreated) {
+      renderer.render(camera, prog, [
+        fileMesh,
+      ]);
+    }
+    else {
+      renderer.render(camera, prog, [
+        //icosphere,
+        //square,
+        //cube,
+        tree,
+      ]);
+    }
     stats.end();
 
     // Tell the browser to call `tick` again whenever it renders a new frame
