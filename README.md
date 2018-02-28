@@ -1,5 +1,25 @@
 # Homework 4: L-systems
 
+Gabriel Robinson-Barr
+
+## Info about my l-systems
+I created palm trees for this project.
+Each tree starts with a 'root' that gets passed to the Expander class. The one I use is just a simple 'R' which is just a single root in my grammar.
+Then calling Expander.expandSeed with the iterations I wanted to expand will store the expanded tree string in the expander object. All the rules for growing the tree are in the expander class. There are comments explaining what each character can expand into, but the basic idea is that a Root grows the trunk underneath it, the Root also can spawn Large Leaf tips, and Coconuts.
+Large Leaf tips grow Large leaf sections behind them, these sections can spawn Small Leaf tips, and those leaf tips similarly to the large ones, will grow small leaf sections behind them.
+Coconuts can grow a bit larger over time as well.
+
+After expanding the string, it gets passed to the Parser class which goes through each character in the expanded string, and determines its size, orientation, vbo data and so on with the help of the Turtle class, which is pretty standard.
+The parser will hold all the vbo data for the tree so that a tree drawable can be created for the expanded string at any time.
+
+The modifiable elements of the GUI are the "Add Tree button" which you can guess, just adds another tree to the scene.
+You can set the number of iterations that the expander will use to expand the string, lower numbers will result in a smaller tree, larger numbers will result in the opposite. I find that 15 iterations provides a decent looking tree most of the time.
+The last modifiable part is the "Weeping Willow" mode, which turns the palm tree into something that looks more like a weeping willow than a palm tree. Code wise is is essentially just adding 20 iterations to whatever number the iterations slider is set to. Because of the way the expander expands the string over really high iterations the tree starts to look more like a weeping willow at 30+ iterations. As a note, having this mode enabled will take longer to expand, so you might have to wait a few seconds after reseting the scene or adding a tree.
+
+As of right now I haven't tested the obj loader yet. In theory it should work if you type in the path to an obj file in the OBJName part of the GUI, but I have like 3 coding projects to finish including hw 5 for this class, and I haven't slept in a long time so if this note is still here in the final commit, it probably means that I didn't end up having time to come back and test it properly so it might not work. There is a decent chance that if it doesn't work its because I don't have textures enabled in my shaders and the obj file doesn't specify a color to use for the vertices. Just a heads up.
+
+
+
 For this assignment, you will design a set of formal grammar rules to create
 a plant life using an L-system program. Once again, you will work from a
 Typescript / WebGL 2.0 base code like the one you used in homework 0. You will

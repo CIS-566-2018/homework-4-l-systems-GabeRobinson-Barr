@@ -37,12 +37,7 @@ let fileMesh: OBJFile;
 let OBJCreated = false;
 
 function loadScene() {
-  // icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, controls.tesselations);
-  // icosphere.create();
-  // square = new Square(vec3.fromValues(0, 0, 0));
-  // square.create();
-  // cube = new Cube(vec3.fromValues(2, 0, 0));
-  // cube.create();
+
   let willowmode = 0;
   if (controls['Weeping Willow Mode']) {
     willowmode = 20;
@@ -85,7 +80,7 @@ function main() {
   gui.add(controls, 'iterations', 1, 30).step(1);
   gui.add(controls, 'OBJName');
   gui.add(controls, 'Load OBJ');
-  //gui.add(controls, "Weeping Willow Mode");
+  gui.add(controls, "Weeping Willow Mode");
   
 
   // get canvas and webgl context
